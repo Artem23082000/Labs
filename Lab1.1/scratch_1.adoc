@@ -19,7 +19,7 @@ GPIOA::ODR::ODR5::High::Set();
 
 == 1) Программа:
 Код программы вычисляющий выражение -3/3U *3 и итог в Terminal I/O
-:imagesdir:Images
+
 image::../../../../../CLionProjects/untitled/image-2021-09-30-22-29-14-784.png[]
 
 и итог
