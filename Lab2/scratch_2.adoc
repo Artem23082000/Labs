@@ -1,3 +1,6 @@
+:imagesdir: Images
+:toc:
+:toc-title: Оглавление
 = Лабораторная работа №3
 
 == Задание
@@ -110,3 +113,5 @@ GPIOC::MODER::MODER9::Output::Set();
     }
     return 1;
 }
+
+![](VID_20211013_221122 (2).gif)
