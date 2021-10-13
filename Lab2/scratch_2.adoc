@@ -114,4 +114,4 @@ GPIOC::MODER::MODER9::Output::Set();
     return 1;
 }
 
-![](VID_20211013_221122 (2).gif)
+image::VID_20211013_221122 (2).gif[]
