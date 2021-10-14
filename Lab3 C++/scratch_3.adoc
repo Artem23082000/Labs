@@ -1,4 +1,4 @@
-:imagesdir: Imagess
+:imagesdir: Imagesss
 :toc:
 :toc-title: Оглавление
 = Лабораторная работа №3
