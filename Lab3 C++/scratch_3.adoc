@@ -40,43 +40,36 @@ int __low_level_init(void)
     asm volatile ("");
    }
    }
-    int main()
-    {
-        RCC::AHB1ENR::GPIOAEN::Enable::Set();
-        RCC::AHB1ENR::GPIOCEN::Enable::Set();
-        GPIOA::MODER::MODER5::Output::Set();
-        GPIOC::MODER::MODER8::Output::Set();
-        GPIOC::MODER::MODER9::Output::Set();
-        GPIOC::MODER::MODER5::Output::Set();
-    {
-for (;;)
+   int main()
 {
-
-  uint32_t* ptrPaOdr = reinterpret_cast<uint32_t*> (0x40020014);
-  *ptrPaOdr ^= static_cast<uint32_t> (1<<5);
-  delay(1000000);
-  *ptrPaOdr ^= static_cast<uint32_t> (1<<5);
-  uint32_t* ptrPcOdr = reinterpret_cast<uint32_t*> (0x40020814);
-  *ptrPcOdr ^= static_cast<uint32_t> (1<<9);
-  delay(1000000);
-  *ptrPcOdr ^= static_cast<uint32_t> (1<<9);
-  uint32_t* ptrPbOdr = reinterpret_cast<uint32_t*> (0x40020814);
-  *ptrPbOdr ^= static_cast<uint32_t> (1<<8);
-  delay(1000000);
-  *ptrPbOdr ^= static_cast<uint32_t> (1<<8);
-  uint32_t* ptrPtOdr = reinterpret_cast<uint32_t*> (0x40020814);
-  *ptrPtOdr ^= static_cast<uint32_t> (1<<5);
-  delay(1000000);
-  *ptrPbOdr ^= static_cast<uint32_t> (1<<5);
-   }
-  return 1;
-  }
+    RCC::AHB1ENR::GPIOAEN::Enable::Set();
+    RCC::AHB1ENR::GPIOCEN::Enable::Set();
+    GPIOA::MODER::MODER5::Output::Set();
+    GPIOC::MODER::MODER5::Output::Set();
+    GPIOC::MODER::MODER8::Output::Set();
+    GPIOC::MODER::MODER9::Output::Set();
+    //GPIOA::ODR::ODR5::High::Set();
+    uint32_t* ptrPaOdr = reinterpret_cast<uint32_t*>(0x40020014);
+    uint32_t* ptrPcOdr = reinterpret_cast<uint32_t*>(0x40020814);
+    for(;;)
+    {
+        *ptrPaOdr ^= static_cast<uint32_t>(1 << 5);
+        *ptrPcOdr ^= static_cast<uint32_t>(1 << 5);
+        *ptrPcOdr ^= static_cast<uint32_t>(1 << 9);
+        *ptrPcOdr ^= static_cast<uint32_t>(1 << 8);
+        delay(1000000);
+        *ptrPaOdr ^= static_cast<uint32_t>(1 << 5);
+        *ptrPcOdr ^= static_cast<uint32_t>(1 << 5);
+        *ptrPcOdr ^= static_cast<uint32_t>(1 << 9);
+        *ptrPcOdr ^= static_cast<uint32_t>(1 << 8);
+        delay(1000000);
+    }
+    return 1;
 }
 
 На гифке ниже показано как работает программа на плате.
 
-image::3otchet.gif[]
-
+image::3otch.gif[]
 == 2) Работа операции ИСКЛЮЧАЮЩЕЕ ИЛИ.
 
 Исключающее или выглядит так "^" и работает по принципу если значения разные то это истина, если одинаковые то это лож.
@@ -97,6 +90,17 @@ z=x^y
 0110(6)
 
 === 2.1) Поменять значения переменных местами, без привлечения третьей переменной.
+Поменять значение можно несколько способами с помощью исключающего или. напрмер:
+
+1) a ^= b ^= a ^= b;
+
+или же ее можно представить в другом виде, как на втором примере.
+
+2)
+[source, c]
+a = a ^ b;
+b = b ^ a;
+a = a ^ b;
 
 Ниже представлена программа которая меняет значение с помощью Исключающего или.
 [source, c]
