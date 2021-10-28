@@ -1,4 +1,4 @@
-:imagesdir: image
+:imagesdir: Image
 :toc:
 :toc-title: Оглавление
 = Отчет по лабораторной работе №5
