@@ -159,7 +159,6 @@ while (RCC::CR::HSERDY::NotReady::IsSet())
 RCC::CFGR::SW::Hse::Set();
 while (!RCC::CFGR::SWS::Hse::IsSet())
 {
-
 }
 RCC::APB2ENR::SYSCFGEN::Enable::Set();
 RCC::AHB1ENR::GPIOAEN::Enable::Set();
