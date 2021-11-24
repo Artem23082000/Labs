@@ -7,14 +7,14 @@
 ----
 Задание к лабораторной работе №7
 
-1. Используя интерфейсы (абстрактный класс) для кнопки и светодиода
-2. Используя контейнер(контроллер) для светодиодов, который содержит в себе массив указателей на интерфейс из пункта 1.
-3. Контроллер светодиодов должен поддерживать 3 режима работы светодоиодов (моргают все светодиоды, и режим "елочка",
+ 1. Используя интерфейсы (абстрактный класс) для кнопки и светодиода
+ 2. Используя контейнер(контроллер) для светодиодов, который содержит в себе массив указателей на интерфейс из пункта 1.
+ 3. Контроллер светодиодов должен поддерживать 3 режима работы светодоиодов (моргают все светодиоды, и режим "елочка",
 моргают четные и нечетный светодиоды в противофазе)
 
 Задание к лабораторной работе №8
 
-Контроллер светодиодов должен поддерживать 3 режима работы светодоиодов (моргают все светодиоды, и режим "елочка",
+ Контроллер светодиодов должен поддерживать 3 режима работы светодоиодов (моргают все светодиоды, и режим "елочка",
 моргают четные и нечетный светодиоды в противофазе). Доделать дизайн, который позволяет настраивать любой режим моргания
 светодиодов, с любым количеством светодиодов, привязанных к любым пинам портов. Соответствующий
 концепции SOLID.
@@ -209,8 +209,8 @@ image::image-78.2.png[]
 #include "gpiocregisters.hpp" //for GPIOC
 class IButton
 {
-public:
-virtual bool IsPressed()=0;
+    public:
+    virtual bool IsPressed()=0;
 };
 
 [source, c]
@@ -220,14 +220,14 @@ virtual bool IsPressed()=0;
 template <typename Port, uint32_t pinNum>
 class Button : public IButton
 {
-public:
-bool IsPressed() override
-{
-bool result= false;
-if((Port::IDR::Get()&(1U << pinNum)) == 0)
-{result = true;}
-return result;
-}
+   public:
+    bool IsPressed() override
+    {
+     bool result= false;
+     if((Port::IDR::Get()&(1U << pinNum)) == 0)
+     {result = true;}
+     return result;
+    }
 };
 
 === 2. Led
@@ -237,21 +237,21 @@ return result;
 template <auto* ...pArg>
 struct Leds
 {
-ILed* pLeds[sizeof ...(pArg)]={pArg...};
-void toggle()
-{
-for(auto it: pLeds)
-{
-it->toggle();
-}
-}
-void SwitchOff()
-{
-for(auto it: pLeds)
-{
-it->SwitchOff();
-}
-}
+  ILed* pLeds[sizeof ...(pArg)]={pArg...};
+    void toggle()
+    {
+        for(auto it: pLeds)
+        {
+         it->toggle();
+        }
+    }
+    void SwitchOff()
+    {
+        for(auto it: pLeds)
+        {
+         it->SwitchOff();
+        }
+    }
 };
 
 [source, c]
@@ -274,15 +274,15 @@ public:
 template <typename Port, uint32_t pinNum>
 class led : public ILed
 {
-public:
-void toggle() override
-{
-Port::ODR::Toggle(1U << pinNum);
-}
-void SwitchOff() override
-{
-Port::ODR::Set(1U << pinNum);
-}
+  public:
+    void toggle() override
+    {
+     Port::ODR::Toggle(1U << pinNum);
+    }
+    void SwitchOff() override
+    {
+     Port::ODR::Set(1U << pinNum);
+    }
 };
 
 === 3. Класс All
@@ -345,22 +345,22 @@ public:
 template <auto& TLeds>
 class Tree: public IMode
 {
-public:
-void toggle() override
-{
-TLeds.pLeds[index]->toggle();
-index++;
-if(index>= std::size(TLeds.pLeds))
-{index=0U;}
-}
+ public:
+    void toggle() override
+    {
+      TLeds.pLeds[index]->toggle();
+        index++;
+      if(index>= std::size(TLeds.pLeds))
+        {index=0U;}
+    }
     void init() override
     {
      index=0U;
-      TLeds.SwitchOff();
+     TLeds.SwitchOff();
     }
   private:
-        uint32_t index=0U;
-  };
+  uint32_t index=0U;
+};
 
 === 6. main
 
@@ -429,16 +429,16 @@ All<leds> allMode;
 Modes<&allMode, &chessMode, &treeMode > modesMode;
 int main()
 {
-for (;;)
-{
-if(userButton.IsPressed())
-{
-modesMode.NextMode();
-}
-delay(300300U);
-modesMode.UpDate();
-}
-return 1;
+    for (;;)
+    {
+     if(userButton.IsPressed())
+     {
+      modesMode.NextMode();
+     }
+    delay(300300U);
+    modesMode.UpDate();
+    }
+  return 1;
 }
 
 == 3) Результат программы
