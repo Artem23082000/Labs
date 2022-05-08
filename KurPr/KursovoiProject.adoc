@@ -1,4 +1,4 @@
-**:**imagesdir: Image22
+:imagesdir: Image22
 :toc:
 :toc-title: Оглавление
 = Курсовая работа
