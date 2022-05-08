@@ -486,3 +486,62 @@ OnRecieve();
   }
   return USART2::DR::Get();
 }
+
+== Main
+
+Main.cpp
+
+[source, c]
+#include "gpioaregisters.hpp" //for GPIOA
+#include "rccregisters.hpp" //for RCC
+#include "rtos.hpp"             //for RTOS
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\SendMessageTask.h"    //for SendMessageTask
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\Voltage.h" //for Voltage
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\Temper.h" //for Temper
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\FilterForVolt.h" //for FilterForVolt
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\FilterForTemp.h" //for FilterForTemp
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\FloatToString.h" //for FloatToString
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\Usart.h" //for USART
+#include <iostream>
+#include <string>
+#include <cstdint>
+std::uint32_t SystemCoreClock = 16'000'000U;
+extern "C"
+{
+int __low_level_init(void)
+{
+//Switch on external 8 MHz oscillator
+RCC::CR::HSEON::On::Set();
+while (RCC::CR::HSERDY::NotReady::IsSet())
+{
+}
+    //Switch system clock on external oscillator
+    RCC::CFGR::SW::Hse::Set();
+    while (!RCC::CFGR::SWS::Hse::IsSet())
+     {
+     }
+    // Тактирование на линию А
+    RCC::AHB1ENR::GPIOAEN::Enable::Set();
+    // Настройка порта А.0
+    GPIOA::OSPEEDR::OSPEEDR0::LowSpeed::Set();
+    GPIOA::PUPDR::PUPDR0::PullUp::Set();
+    GPIOA::OTYPER::OT0::OutputPushPull::Set();
+    GPIOA::MODER::MODER0::Analog::Set();
+    //Переключение на частоту ADC1
+    RCC::APB2ENR::ADC1EN::Enable::Set();
+    return 1;
+  }
+}
+Voltage voltage;
+Temper temper;
+FilterForVolt filtervolt(50.0f, 50.0f);
+FilterForTemp filtertemp;
+USART usart;
+FloatToString fstr(3);
+SendMessageTask sendMessage(usart, fstr, " [B]", " [0C]", voltage, temper, filtervolt, filtertemp);
+int main(void)
+{
+  using namespace OsWrapper;
+  Rtos::CreateThread(sendMessage, "SendMessageTask", ThreadPriority::highest);
+  Rtos::Start();
+}
