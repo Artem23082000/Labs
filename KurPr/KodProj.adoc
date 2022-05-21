@@ -251,6 +251,64 @@ filtvolt = filtvolt + (volt - filtvolt) * tau;
 return filtvolt;
 }
 
+== Класс VoltTempRaschet
+
+VoltTempRaschet.h
+
+[source, c]
+#pragma once
+#include <string>
+#include "thread.hpp"                                                           //for Thread
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\Usart.h"                    //for Voltage
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\FloatToString.h"            //for FloatToString
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\Voltage.h"          //for Voltage
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\Temper.h"           //for Temper
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\FilterForVolt.h"    //for FilterForVolt
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\FilterForTemp.h"    //for FilterForTemp
+class VoltTempRaschet: public OsWrapper::Thread<200>
+{
+public:
+VoltTempRaschet(Voltage voltage, Temper temper, FilterForVolt& filtforvoltage, FilterForTemp& filtfortemper):
+volt(voltage), temp(temper), filtforvolt(filtforvoltage), filtfortemp(filtfortemper)
+{
+}
+void Execute() override;
+  void delay(uint32_t value);
+private:
+  Voltage volt;
+  Temper temp;
+  FilterForVolt& filtforvolt;
+  FilterForTemp& filtfortemp;
+};
+
+
+VoltTempRaschet.cpp
+
+[source, c]
+#include "C:\Users\User\Desktop\RtosWrapper\MyTasks\VoltTempRaschet.h"    //for VoltTempRaschet
+void VoltTempRaschet::delay(uint32_t value)
+{
+for(int32_t i = 0; i < value; ++i)
+{
+asm volatile("");
+}
+}
+void VoltTempRaschet::Execute()
+{
+constexpr uint32_t counter100ms = 2;
+uint32_t i =1;
+for(;;)
+{
+if(i == counter100ms)
+{
+filtforvolt.FilteredVolt(volt.DiscreteInVolt());
+i=0;
+}
+filtfortemp.FilteredTemp(temp.DiscreteInTemp());
+Sleep(50ms);
+i++;
+}
+}
 
 == Класс SendMessageTask
 
